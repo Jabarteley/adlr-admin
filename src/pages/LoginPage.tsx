@@ -23,19 +23,23 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
-        <h1 className="text-xl font-bold text-slate-900">ADLr Admin</h1>
-        <p className="mt-1 text-sm text-slate-500">Sign in with your admin account.</p>
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-adlr-lavender via-adlr-bg to-white px-4">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-2xl border border-adlr-border bg-white p-8 shadow-xl shadow-slate-200/50">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-adlr-purple to-adlr-purple-deep text-lg font-extrabold text-white">
+          A
+        </div>
+        <h1 className="mt-4 text-xl font-bold text-adlr-text">ADLr Admin</h1>
+        <p className="mt-1 text-sm text-adlr-muted">Sign in with your admin account.</p>
 
         <label className="mt-6 block text-sm font-medium text-slate-700">
           Email
           <input
             type="email"
             required
+            autoFocus
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+            className="mt-1 w-full rounded-lg border border-adlr-border px-3 py-2 text-sm focus:border-adlr-purple focus:outline-none focus:ring-2 focus:ring-adlr-purple-light"
           />
         </label>
 
@@ -46,16 +50,16 @@ export function LoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="mt-1 w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+            className="mt-1 w-full rounded-lg border border-adlr-border px-3 py-2 text-sm focus:border-adlr-purple focus:outline-none focus:ring-2 focus:ring-adlr-purple-light"
           />
         </label>
 
-        {error && <p className="mt-3 text-sm text-red-600">{error}</p>}
+        {error && <p className="mt-3 text-sm text-adlr-danger">{error}</p>}
 
         <button
           type="submit"
           disabled={submitting}
-          className="mt-6 w-full rounded-lg bg-violet-600 py-2 text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-60"
+          className="mt-6 w-full rounded-lg bg-gradient-to-br from-adlr-purple to-adlr-purple-deep py-2.5 text-sm font-semibold text-white shadow-sm hover:opacity-90 disabled:opacity-60"
         >
           {submitting ? 'Signing in…' : 'Sign in'}
         </button>

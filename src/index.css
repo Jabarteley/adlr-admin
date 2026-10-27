@@ -1,6 +1,36 @@
 @import "tailwindcss";
 
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@theme {
+  --font-sans: 'Plus Jakarta Sans', Inter, system-ui, sans-serif;
+
+  --color-adlr-bg: #FBFAFC;
+  --color-adlr-pink-light: #FADCF8;
+  --color-adlr-purple-light: #EEEAFB;
+  --color-adlr-purple: #8B5CF6;
+  --color-adlr-purple-deep: #6D28D9;
+  --color-adlr-lavender: #F4F1FB;
+  --color-adlr-card: #FFFFFF;
+  --color-adlr-border: #ECEAF2;
+  --color-adlr-text: #1B1B23;
+  --color-adlr-muted: #6B6B7A;
+  --color-adlr-success: #16A34A;
+  --color-adlr-success-light: #DCFCE7;
+  --color-adlr-warning: #D97706;
+  --color-adlr-warning-light: #FEF3C7;
+  --color-adlr-danger: #DC2626;
+  --color-adlr-danger-light: #FEE2E2;
+}
+
 body {
   margin: 0;
-  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  background: var(--color-adlr-bg);
+  color: var(--color-adlr-text);
+}
+
+::selection {
+  background: var(--color-adlr-purple-light);
 }

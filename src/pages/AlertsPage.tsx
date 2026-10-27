@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import { AlertTriangle } from 'lucide-react'
 import { api } from '../lib/api'
+import { PageHeader } from '../components/PageHeader'
+import { EmptyState } from '../components/EmptyState'
+import { Badge } from '../components/Badge'
 
 type Alert = {
   id: string
@@ -15,10 +19,10 @@ type Alert = {
 
 const PAGE_SIZE = 20
 
-const SEVERITY_STYLES: Record<string, string> = {
-  high: 'bg-red-100 text-red-700',
-  medium: 'bg-amber-100 text-amber-700',
-  low: 'bg-slate-100 text-slate-600',
+function severityBadge(severity: string) {
+  if (severity === 'high') return <Badge variant="danger">High</Badge>
+  if (severity === 'medium') return <Badge variant="warning">Medium</Badge>
+  return <Badge variant="neutral">Low</Badge>
 }
 
 export function AlertsPage() {
@@ -41,70 +45,64 @@ export function AlertsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Open alerts</h1>
-      <p className="mt-1 text-sm text-slate-500">Care-pattern alerts not yet resolved, across every network.</p>
+      <PageHeader title="Open alerts" subtitle="Care-pattern alerts not yet resolved, across every network." />
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden rounded-2xl border border-adlr-border bg-white shadow-sm shadow-slate-100/50">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-500">
+          <thead className="border-b border-adlr-border bg-slate-50/60 text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-3">Network</th>
-              <th className="px-4 py-3">Type</th>
-              <th className="px-4 py-3">Severity</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Raised</th>
+              <th className="px-5 py-3">Network</th>
+              <th className="px-5 py-3">Type</th>
+              <th className="px-5 py-3">Severity</th>
+              <th className="px-5 py-3">Status</th>
+              <th className="px-5 py-3">Raised</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
             {alerts.map((a) => (
-              <tr key={a.id}>
-                <td className="px-4 py-3">
-                  <Link to={`/networks/${a.network_id}`} className="text-violet-700 hover:underline">
+              <tr key={a.id} className="hover:bg-slate-50/80">
+                <td className="px-5 py-3">
+                  <Link to={`/networks/${a.network_id}`} className="font-medium text-adlr-purple-deep hover:underline">
                     {a.care_networks?.network_name || a.network_id}
                   </Link>
+                  {a.trigger_reason && <p className="mt-0.5 text-xs text-slate-400">{a.trigger_reason}</p>}
                 </td>
-                <td className="px-4 py-3 text-slate-600">{a.alert_type}</td>
-                <td className="px-4 py-3">
-                  <span className={`rounded px-2 py-0.5 text-xs font-semibold ${SEVERITY_STYLES[a.severity] || 'bg-slate-100 text-slate-600'}`}>
-                    {a.severity}
-                  </span>
-                </td>
-                <td className="px-4 py-3 text-slate-600">{a.status}</td>
-                <td className="px-4 py-3 text-slate-400">{new Date(a.created_at).toLocaleString()}</td>
+                <td className="px-5 py-3 text-slate-600 capitalize">{a.alert_type.replace(/_/g, ' ')}</td>
+                <td className="px-5 py-3">{severityBadge(a.severity)}</td>
+                <td className="px-5 py-3 text-slate-600 capitalize">{a.status}</td>
+                <td className="px-5 py-3 text-slate-400">{new Date(a.created_at).toLocaleString()}</td>
               </tr>
             ))}
-            {!loading && alerts.length === 0 && (
-              <tr>
-                <td colSpan={5} className="px-4 py-8 text-center text-slate-400">
-                  No open alerts.
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
+        {!loading && alerts.length === 0 && (
+          <EmptyState icon={AlertTriangle} title="No open alerts" subtitle="Everything's quiet right now." />
+        )}
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-sm text-slate-500">
-        <span>
-          {count === 0 ? 0 : offset + 1}–{Math.min(offset + PAGE_SIZE, count)} of {count}
-        </span>
-        <div className="flex gap-2">
-          <button
-            disabled={offset === 0}
-            onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
-            className="rounded-lg border border-slate-300 px-3 py-1.5 disabled:opacity-40"
-          >
-            Previous
-          </button>
-          <button
-            disabled={offset + PAGE_SIZE >= count}
-            onClick={() => setOffset(offset + PAGE_SIZE)}
-            className="rounded-lg border border-slate-300 px-3 py-1.5 disabled:opacity-40"
-          >
-            Next
-          </button>
+      {count > PAGE_SIZE && (
+        <div className="mt-4 flex items-center justify-between text-sm text-adlr-muted">
+          <span>
+            {count === 0 ? 0 : offset + 1}–{Math.min(offset + PAGE_SIZE, count)} of {count}
+          </span>
+          <div className="flex gap-2">
+            <button
+              disabled={offset === 0}
+              onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}
+              className="rounded-lg border border-adlr-border px-3 py-1.5 font-medium hover:bg-slate-50 disabled:opacity-40"
+            >
+              Previous
+            </button>
+            <button
+              disabled={offset + PAGE_SIZE >= count}
+              onClick={() => setOffset(offset + PAGE_SIZE)}
+              className="rounded-lg border border-adlr-border px-3 py-1.5 font-medium hover:bg-slate-50 disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   )
 }

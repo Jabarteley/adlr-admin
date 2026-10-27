@@ -1,6 +1,12 @@
 import { useEffect, useState, type FormEvent } from 'react'
+import { UserCog, UserPlus } from 'lucide-react'
 import { api, ApiError } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
+import { PageHeader } from '../components/PageHeader'
+import { EmptyState } from '../components/EmptyState'
+import { Avatar } from '../components/Avatar'
+import { Badge } from '../components/Badge'
+import { ConfirmDialog } from '../components/ConfirmDialog'
 
 type Admin = {
   id: string
@@ -17,7 +23,8 @@ export function AdminsPage() {
   const [form, setForm] = useState({ email: '', password: '', first_name: '', last_name: '' })
   const [formError, setFormError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
-  const [busyId, setBusyId] = useState<string | null>(null)
+  const [revokeTarget, setRevokeTarget] = useState<Admin | null>(null)
+  const [revoking, setRevoking] = useState(false)
 
   function load() {
     setLoading(true)
@@ -44,32 +51,37 @@ export function AdminsPage() {
     }
   }
 
-  async function handleRevoke(id: string) {
-    if (!confirm('Revoke admin access for this account?')) return
-    setBusyId(id)
+  async function handleRevoke() {
+    if (!revokeTarget) return
+    setRevoking(true)
     try {
-      await api.delete(`/admin/admins/${id}`)
+      await api.delete(`/admin/admins/${revokeTarget.id}`)
+      setRevokeTarget(null)
       load()
     } finally {
-      setBusyId(null)
+      setRevoking(false)
     }
   }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-slate-900">Admins</h1>
-      <p className="mt-1 text-sm text-slate-500">Accounts with access to this panel.</p>
+      <PageHeader title="Admins" subtitle="Accounts with access to this panel." />
 
-      <form onSubmit={handleCreate} className="mt-6 rounded-xl border border-slate-200 bg-white p-5">
-        <h2 className="text-sm font-semibold text-slate-900">Add a new admin</h2>
-        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <form onSubmit={handleCreate} className="rounded-2xl border border-adlr-border bg-white p-6 shadow-sm shadow-slate-100/50">
+        <div className="flex items-center gap-2">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-adlr-purple-light text-adlr-purple-deep">
+            <UserPlus size={15} />
+          </div>
+          <h2 className="text-sm font-bold text-adlr-text">Add a new admin</h2>
+        </div>
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           <input
             type="email"
             required
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+            className="rounded-lg border border-adlr-border px-3 py-2 text-sm focus:border-adlr-purple focus:outline-none focus:ring-2 focus:ring-adlr-purple-light"
           />
           <input
             type="password"
@@ -78,83 +90,98 @@ export function AdminsPage() {
             placeholder="Password (min 8 characters)"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+            className="rounded-lg border border-adlr-border px-3 py-2 text-sm focus:border-adlr-purple focus:outline-none focus:ring-2 focus:ring-adlr-purple-light"
           />
           <input
             type="text"
             placeholder="First name"
             value={form.first_name}
             onChange={(e) => setForm({ ...form, first_name: e.target.value })}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+            className="rounded-lg border border-adlr-border px-3 py-2 text-sm focus:border-adlr-purple focus:outline-none focus:ring-2 focus:ring-adlr-purple-light"
           />
           <input
             type="text"
             placeholder="Last name"
             value={form.last_name}
             onChange={(e) => setForm({ ...form, last_name: e.target.value })}
-            className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-violet-500 focus:outline-none"
+            className="rounded-lg border border-adlr-border px-3 py-2 text-sm focus:border-adlr-purple focus:outline-none focus:ring-2 focus:ring-adlr-purple-light"
           />
         </div>
-        {formError && <p className="mt-3 text-sm text-red-600">{formError}</p>}
+        {formError && <p className="mt-3 text-sm text-adlr-danger">{formError}</p>}
         <button
           type="submit"
           disabled={submitting}
-          className="mt-4 rounded-lg bg-violet-600 px-4 py-2 text-sm font-semibold text-white hover:bg-violet-700 disabled:opacity-60"
+          className="mt-4 rounded-lg bg-gradient-to-br from-adlr-purple to-adlr-purple-deep px-4 py-2 text-sm font-semibold text-white hover:opacity-90 disabled:opacity-60"
         >
           {submitting ? 'Creating…' : 'Create admin'}
         </button>
-        <p className="mt-2 text-xs text-slate-400">
+        <p className="mt-2 text-xs text-adlr-muted">
           If the email already has an ADLr account, it's simply flagged as admin. Otherwise a new account is created
           with the password above.
         </p>
       </form>
 
-      <div className="mt-6 overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="mt-6 overflow-hidden rounded-2xl border border-adlr-border bg-white shadow-sm shadow-slate-100/50">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-xs font-semibold uppercase text-slate-500">
+          <thead className="border-b border-adlr-border bg-slate-50/60 text-xs font-semibold uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Since</th>
-              <th className="px-4 py-3" />
+              <th className="px-5 py-3">Name</th>
+              <th className="px-5 py-3">Since</th>
+              <th className="px-5 py-3" />
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {admins.map((a) => (
-              <tr key={a.id}>
-                <td className="px-4 py-3 text-slate-800">
-                  {`${a.first_name || ''} ${a.last_name || ''}`.trim() || '—'}
-                  {a.id === session?.user.id && (
-                    <span className="ml-2 rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold text-slate-500">
-                      YOU
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-3 text-slate-600">{a.email}</td>
-                <td className="px-4 py-3 text-slate-400">{new Date(a.created_at).toLocaleDateString()}</td>
-                <td className="px-4 py-3 text-right">
-                  {a.id !== session?.user.id && (
-                    <button
-                      disabled={busyId === a.id}
-                      onClick={() => handleRevoke(a.id)}
-                      className="text-xs font-medium text-red-600 hover:underline disabled:opacity-50"
-                    >
-                      Revoke
-                    </button>
-                  )}
-                </td>
-              </tr>
-            ))}
-            {!loading && admins.length === 0 && (
-              <tr>
-                <td colSpan={4} className="px-4 py-8 text-center text-slate-400">
-                  No admins yet.
-                </td>
-              </tr>
-            )}
+            {admins.map((a) => {
+              const name = `${a.first_name || ''} ${a.last_name || ''}`.trim() || '—'
+              const isYou = a.id === session?.user.id
+              return (
+                <tr key={a.id} className="hover:bg-slate-50/80">
+                  <td className="px-5 py-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar name={name} size="sm" />
+                      <div>
+                        <p className="font-medium text-slate-800">
+                          {name}
+                          {isYou && (
+                            <span className="ml-2 align-middle">
+                              <Badge variant="neutral">You</Badge>
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-xs text-slate-400">{a.email}</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-5 py-3 text-slate-400">{new Date(a.created_at).toLocaleDateString()}</td>
+                  <td className="px-5 py-3 text-right">
+                    {!isYou && (
+                      <button
+                        onClick={() => setRevokeTarget(a)}
+                        className="text-xs font-medium text-adlr-danger hover:underline"
+                      >
+                        Revoke
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              )
+            })}
           </tbody>
         </table>
+        {!loading && admins.length === 0 && <EmptyState icon={UserCog} title="No admins yet" />}
       </div>
+
+      {revokeTarget && (
+        <ConfirmDialog
+          title="Revoke admin access?"
+          description={`${revokeTarget.email} will immediately lose access to this panel. Their regular ADLr account is unaffected.`}
+          confirmWord="revoke"
+          confirmLabel="Revoke"
+          busy={revoking}
+          onConfirm={handleRevoke}
+          onCancel={() => setRevokeTarget(null)}
+        />
+      )}
     </div>
   )
 }
