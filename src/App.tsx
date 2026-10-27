@@ -8,6 +8,11 @@ import { UsersPage } from './pages/UsersPage'
 import { UserDetailPage } from './pages/UserDetailPage'
 import { NetworksPage } from './pages/NetworksPage'
 import { NetworkDetailPage } from './pages/NetworkDetailPage'
+import { AlertsPage } from './pages/AlertsPage'
+import { ConsentPage } from './pages/ConsentPage'
+import { AuditLogPage } from './pages/AuditLogPage'
+import { SystemHealthPage } from './pages/SystemHealthPage'
+import { AdminsPage } from './pages/AdminsPage'
 
 export default function App() {
   return (
@@ -61,6 +66,56 @@ export default function App() {
               <ProtectedRoute>
                 <Layout>
                   <NetworkDetailPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/alerts"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AlertsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/consent"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ConsentPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/audit-log"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AuditLogPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/system-health"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <SystemHealthPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admins"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <AdminsPage />
                 </Layout>
               </ProtectedRoute>
             }

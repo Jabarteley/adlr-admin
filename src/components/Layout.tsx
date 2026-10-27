@@ -6,6 +6,11 @@ const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', end: true },
   { to: '/users', label: 'Users' },
   { to: '/networks', label: 'Networks' },
+  { to: '/alerts', label: 'Alerts' },
+  { to: '/consent', label: 'Consent' },
+  { to: '/audit-log', label: 'Audit log' },
+  { to: '/system-health', label: 'System health' },
+  { to: '/admins', label: 'Admins' },
 ]
 
 export function Layout({ children }: { children: ReactNode }) {
