@@ -3,11 +3,12 @@ import type { Session } from '@supabase/supabase-js'
 import { supabase } from '../lib/supabase'
 import { api, ApiError } from '../lib/api'
 
-type AuthStatus = 'loading' | 'signed-out' | 'not-admin' | 'admin'
+type AuthStatus = 'loading' | 'signed-out' | 'not-admin' | 'admin' | 'error'
 
 type AuthContextValue = {
   status: AuthStatus
   session: Session | null
+  error: string | null
   signIn: (email: string, password: string) => Promise<string | null>
   signOut: () => Promise<void>
 }
@@ -17,6 +18,7 @@ const AuthContext = createContext<AuthContextValue | null>(null)
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [status, setStatus] = useState<AuthStatus>('loading')
   const [session, setSession] = useState<Session | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   async function checkAdminAccess(nextSession: Session | null) {
     if (!nextSession) {
@@ -29,8 +31,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (err) {
       if (err instanceof ApiError && err.status === 403) {
         setStatus('not-admin')
+      } else if (err instanceof ApiError) {
+        // Signed in, but something other than "not an admin" went wrong
+        // (401 = bad/expired token, 5xx = server issue, etc). Surface it
+        // instead of silently bouncing back to the login screen.
+        setError(err.message)
+        setStatus('error')
       } else {
-        setStatus('signed-out')
+        // Not an ApiError at all — fetch itself failed (CORS, network down,
+        // DNS, wrong VITE_API_URL). This is the case that used to vanish
+        // with zero feedback.
+        setError(
+          `Could not reach the API at ${import.meta.env.VITE_API_URL}. This is usually a CORS or network issue — check the browser console's Network tab for the exact failure.`
+        )
+        setStatus('error')
       }
     }
   }
@@ -59,7 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ status, session, signIn, signOut }}>
+    <AuthContext.Provider value={{ status, session, error, signIn, signOut }}>
       {children}
     </AuthContext.Provider>
   )
