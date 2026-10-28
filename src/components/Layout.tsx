@@ -35,10 +35,10 @@ export function Layout({ children }: { children: ReactNode }) {
       <aside className="flex w-60 shrink-0 flex-col border-r border-adlr-border bg-white">
         <div className="flex items-center gap-2 px-5 py-5">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-adlr-purple to-adlr-purple-deep text-sm font-extrabold text-white">
-            A
+            T
           </div>
           <div>
-            <p className="text-sm font-extrabold leading-tight text-adlr-text">ADLr</p>
+            <p className="text-sm font-extrabold leading-tight text-adlr-text">Tuora</p>
             <p className="text-[11px] font-medium leading-tight text-adlr-muted">Admin</p>
           </div>
         </div>

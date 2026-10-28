@@ -116,7 +116,7 @@ export function AdminsPage() {
           {submitting ? 'Creating…' : 'Create admin'}
         </button>
         <p className="mt-2 text-xs text-adlr-muted">
-          If the email already has an ADLr account, it's simply flagged as admin. Otherwise a new account is created
+          If the email already has an Tuora account, it's simply flagged as admin. Otherwise a new account is created
           with the password above.
         </p>
       </form>
@@ -174,7 +174,7 @@ export function AdminsPage() {
       {revokeTarget && (
         <ConfirmDialog
           title="Revoke admin access?"
-          description={`${revokeTarget.email} will immediately lose access to this panel. Their regular ADLr account is unaffected.`}
+          description={`${revokeTarget.email} will immediately lose access to this panel. Their regular Tuora account is unaffected.`}
           confirmWord="revoke"
           confirmLabel="Revoke"
           busy={revoking}

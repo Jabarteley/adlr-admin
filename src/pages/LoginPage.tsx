@@ -11,7 +11,7 @@ export function LoginPage() {
   const [error, setError] = useState<string | null>(null)
   const [submitting, setSubmitting] = useState(false)
 
-  if (status === 'admin' || status === 'not-admin') {
+  if (status === 'admin' || status === 'not-admin' || status === 'error') {
     return <Navigate to="/" replace />
   }
 
@@ -28,9 +28,9 @@ export function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-adlr-lavender via-adlr-bg to-white px-4">
       <form onSubmit={handleSubmit} className="w-full max-w-sm rounded-2xl border border-adlr-border bg-white p-8 shadow-xl shadow-slate-200/50">
         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-adlr-purple to-adlr-purple-deep text-lg font-extrabold text-white">
-          A
+          T
         </div>
-        <h1 className="mt-4 text-xl font-bold text-adlr-text">ADLr Admin</h1>
+        <h1 className="mt-4 text-xl font-bold text-adlr-text">Tuora Admin</h1>
         <p className="mt-1 text-sm text-adlr-muted">Sign in with your admin account.</p>
 
         <label className="mt-6 block text-sm font-medium text-slate-700">
