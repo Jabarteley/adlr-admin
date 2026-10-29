@@ -10,6 +10,8 @@ import {
   Activity,
   UserCog,
   LogOut,
+  Mail,
+  ListChecks,
   type LucideIcon,
 } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
@@ -19,6 +21,8 @@ const NAV_ITEMS: { to: string; label: string; icon: LucideIcon; end?: boolean }[
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/users', label: 'Users', icon: Users },
   { to: '/networks', label: 'Networks', icon: Share2 },
+  { to: '/waitlist', label: 'Waitlist', icon: ListChecks },
+  { to: '/newsletter', label: 'Newsletter', icon: Mail },
   { to: '/alerts', label: 'Alerts', icon: AlertTriangle },
   { to: '/consent', label: 'Consent', icon: ShieldCheck },
   { to: '/audit-log', label: 'Audit log', icon: ScrollText },

@@ -13,6 +13,8 @@ import { ConsentPage } from './pages/ConsentPage'
 import { AuditLogPage } from './pages/AuditLogPage'
 import { SystemHealthPage } from './pages/SystemHealthPage'
 import { AdminsPage } from './pages/AdminsPage'
+import { WaitlistPage } from './pages/WaitlistPage'
+import { NewsletterPage } from './pages/NewsletterPage'
 
 export default function App() {
   return (
@@ -66,6 +68,26 @@ export default function App() {
               <ProtectedRoute>
                 <Layout>
                   <NetworkDetailPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/waitlist"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <WaitlistPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/newsletter"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <NewsletterPage />
                 </Layout>
               </ProtectedRoute>
             }
